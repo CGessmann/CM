@@ -1,0 +1,38 @@
+{% extends "cm/base.html" %}
+{% load bootstrap3 %}
+{% load sorting_tags %}
+{% block title %}Own Papers{% endblock %}
+{% block content %}
+    <p>
+        <a href="{% url 'add_paper' %}" class="btn btn-primary">Register new paper</a>
+    </p>
+    {# Todo: Chevron auf eine Zeile und hinter den ColumnHeader   #}
+    {% auto_sort queryset %}
+    <table class="table table-striped table-bordered table-hover
+                    table-condensed table-responsive table table-striped">
+    <thead>
+    <tr>
+        {% sort_th "#" "id" %}
+        {% sort_th "Title" "title" %}
+        {% sort_th "Paper Type" "paperType" %}
+        <th><span>Abstract</span></th>
+        {% sort_th "Submitted at" "submissionDate" %}
+        <th>&nbsp;</th>
+    </tr>
+    </thead>
+    {% for row in rows %}
+        <tr>
+            <td>{{ row.pk }}</td>
+            <td><a href="{% url 'editPaper' paperID=row.pk %}"> {{ row.title }}</a></td>
+            <td>{{ row.paperType.name }}</td>
+            <td>{{ row.abstract|truncatechars:100 }}</td>
+            <td>{{ row.submissionDate|date:"DATETIME_FORMAT" }}</td>
+            <td>
+                <a href="{{ MEDIA_URL }}{{ row.paperFile }}">{% bootstrap_icon "file" %}</a>
+                <a href="{% url 'deletePaper' pk=row.pk %}"> {% bootstrap_icon "trash" %}</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% bootstrap_pagination rows url='?'|add:request.META.QUERY_STRING size="small" %}
+{% endblock %}

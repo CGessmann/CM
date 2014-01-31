@@ -1,0 +1,29 @@
+{% extends "cm/base.html" %}
+{% load bootstrap3 %}
+
+{% block extra_head %}
+    {{ form.media }}
+    <script src="//cdn.jsdelivr.net/typeahead.js/0.9.3/typeahead.min.js"></script>
+    <link href="/static/css/twitter-typeahead.css" type="text/css" rel="stylesheet">
+    <script src="/static/javascript/jquery.formset.min.js"></script>
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <dl>
+        <dt>Additional Email Addresses</dt>
+        {% for emailAddress in additionalEmailAddresses %}
+            <dd>
+                {{ emailAddress.email }}
+                <a href="{% url 'deleteAdditionalEmail' pk=emailAddress.pk %}"> {% bootstrap_icon "trash" %}</a>
+            </dd>
+        {% endfor %}
+    </dl>
+    <form action="" method="post" id="myForm" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% bootstrap_form form layout="horizontal" %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ cancel_url }}">
+            <button type="button" class="btn btn-default">Cancel</button>
+        </a>
+    </form>
+{% endblock %}

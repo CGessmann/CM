@@ -1,0 +1,77 @@
+{% extends "cm/base.html" %}
+{% load bootstrap3 %}
+
+{% block extra_head %}
+    {{ form.media }}
+    <script src="//cdn.jsdelivr.net/typeahead.js/0.9.3/typeahead.min.js"></script>
+    <link href="/static/css/twitter-typeahead.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript">
+        numberOfEntries = 0;
+        $(document).ready(function () {
+            $('#id_affiliation1').attr('autocomplete', 'off');
+            $('#id_affiliation1').typeahead([
+                {
+                    name: 'options',
+                    valuekey: 'options',
+                    remote: '/typeahead/affiliation1?query=%QUERY'
+                }
+            ])
+            // change class of formset to bootstrap3
+            for (i = 0; i < parseInt($('#id_additional_emails-TOTAL_FORMS').val()); i++) {
+                $("#id_additional_emails-" + i + "-email").addClass('form-control');
+                if (!$("#id_additional_emails-" + i + "-email").val()) {
+                    $("#id_additional_emails-" + i + "-email").hide();
+                } else {
+                    numberOfEntries++;
+                }
+            }
+            if (numberOfEntries + 1 == parseInt($('#id_additional_emails-TOTAL_FORMS').val())) {
+                $('#plusSign').hide();
+            } else {
+                $("#id_additional_emails-" + numberOfEntries + "-email").show();
+            }
+
+        }) // end ready
+        function addEmailField() {
+            numberOfEntries++;
+            $("#id_additional_emails-" + numberOfEntries + "-email").show();
+            if (numberOfEntries + 1 == parseInt($('#id_additional_emails-TOTAL_FORMS').val())) {
+                $('#plusSign').hide();
+            }
+        }
+    </script>
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <form action="" method="post" id="myForm" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form user_form layout="horizontal" %}
+        <div class="panel panel-default col-md-offset-1">
+            <div class="panel-heading">Insert additional email addresses here:</div>
+            <div class="panel-body">
+                <div class="form-inline" role="form">
+                    {% for addEmail in additional_email_formset.forms %}
+                        <div class="col-md-4 form-group {% if addEmail.errors %}has-error{% endif %}">
+                            {% for item in addEmail %}
+                                {{ item }}
+                                {% if item.errors %}
+                                    <span class="help-block">{{ item.errors.as_text }}</span>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    {% endfor %}
+                    <div class="col-md-4" id="plusSign">
+                        <a href="javascript:addEmailField()">{% bootstrap_icon "plus" %}</a>
+                    </div>
+                    {{ additional_email_formset.management_form }}
+                </div>
+            </div>
+        </div>
+        {% bootstrap_form user_profile_form layout="horizontal" %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ cancel_url }}">
+            <button type="button" class="btn btn-default">Cancel</button>
+        </a>
+    </form>
+{% endblock %}

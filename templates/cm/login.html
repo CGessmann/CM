@@ -1,0 +1,49 @@
+{% extends "cm/base.html" %}
+{% load bootstrap3 %}
+
+{% block extra_head %}
+    {{ form.media }}
+{% endblock %}
+
+{% block title %}Login{% endblock %}
+{% block content %}
+	
+	<a href="{% url 'socialauth_begin' 'google-oauth2' %}">Login with Google</a>
+	<a href="{% url 'socialauth_begin' 'github' %}">Login with GitHub</a>
+    <div class="alert alert-info">Here goes the login info{{ LoginInfo }}</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                <div class="form-group">
+                    <form class="form-horizontal" id="form" action="{% url 'django.contrib.auth.views.login' %}"
+                          method="POST">
+                        {% csrf_token %}
+                        {% bootstrap_form form layout="horizontal" field_class="col-md-8" label_class="col-md-4" %}
+                        {# pass throgh the 'next' parameter for redirect to the requested page #}
+                        <input type="hidden" name="next" id="next" value="{{ next }}"/>
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-8">
+                                <button type="submit" class="btn btn-success">{% bootstrap_icon "log-in" %} Login
+                                </button>
+								
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="container">
+                <h4>Not registered yet?</h4>
+
+                <p><a href="{% url 'addPerson' %}" class="btn btn-primary">Register as an Author</a></p>
+            </div>
+            <div class="container">
+                <h4>Password forgotten?</h4>
+
+                <p><a href="{% url 'passwordForgotten' %}">{% bootstrap_icon "arrow-right" %} Reset Password</a></p>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

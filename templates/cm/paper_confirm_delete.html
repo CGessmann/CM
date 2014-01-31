@@ -1,0 +1,19 @@
+{% extends "cm/base.html" %}
+{% load bootstrap3 %}
+{% load sorting_tags %}
+{% block title %}Delete Paper{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-6">
+	    	<div class="well">
+	        	<div class="form-group">
+					<form class="form-horizontal" action="" method="post">{% csrf_token %}
+					    <p>Are you sure to delete <strong>"{{ object.title }}" (#{{ object.pk }})</strong>?</p>
+					    <button type="submit" class="btn btn-warning">{% bootstrap_icon "trash" %} Delete</button>
+					    <a class="btn btn-default" href="{% url 'paperList' %}"> Cancel</a>
+					</form>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}
